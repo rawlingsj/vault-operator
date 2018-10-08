@@ -1,4 +1,5 @@
-CHART_REPO := http://jenkins-x-chartmuseum:8080
+#CHART_REPO := http://jenkins-x-chartmuseum:8080
+CHART_REPO := https://chartmuseum.jx.cd.jenkins-x.io
 CURRENT=$(pwd)
 NAME := vault-operator
 OS := $(shell uname)
@@ -28,6 +29,11 @@ clean:
 	rm -rf charts
 	rm -rf ${NAME}*.tgz
 	rm -rf requirements.lock
+
+tag:
+	git config --global credential.helper store
+	jx step git credentials
+	jx step next-version -t --use-git-tag-only
 
 release: clean build
 	sed -i -e "s/version:.*/version: $(VERSION)/" Chart.yaml
